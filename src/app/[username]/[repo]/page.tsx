@@ -43,7 +43,7 @@ export default async function RepositoryPage({ params }: RepositoryPageProps) {
       <CommonHeader />
       <main className="min-h-[calc(100vh-61px)] w-full mx-auto max-w-7xl px-4 py-8">
         <div className="space-y-8">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-4">
             <h1 className="text-3xl font-semibold">
               {username}/{name}
             </h1>

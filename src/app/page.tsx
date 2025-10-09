@@ -57,7 +57,7 @@ export default async function Home() {
               <Button asChild>
                 <Link href={session?.user ? "/repositories/new" : "/sign-up"}>
                   <PlusIcon className="h-4 w-4" />
-                  {session?.user ? "Create repository" : "Sign up"}
+                  Create repository
                 </Link>
               </Button>
             </EmptyContent>

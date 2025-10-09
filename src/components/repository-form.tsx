@@ -137,9 +137,7 @@ export function RepositoryForm() {
             onChange={handleNameChange}
             aria-invalid={nameError ? true : false}
           />
-          {nameError && (
-            <p className="text-sm text-destructive">{nameError}</p>
-          )}
+          {nameError && <p className="text-sm text-destructive">{nameError}</p>}
         </div>
         <div className="space-y-2">
           <Label htmlFor="defaultBranch">Default branch</Label>
@@ -159,7 +157,9 @@ export function RepositoryForm() {
           <Select
             name="visibility"
             value={visibility}
-            onValueChange={(value) => setVisibility(value as "public" | "private")}
+            onValueChange={(value) =>
+              setVisibility(value as "public" | "private")
+            }
             disabled={isLoading}
           >
             <SelectTrigger>
@@ -167,26 +167,12 @@ export function RepositoryForm() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="public">
-                <div className="flex items-center gap-2">
-                  <GlobeIcon className="h-4 w-4" />
-                  <div>
-                    <div className="font-medium">Public</div>
-                    <div className="text-xs text-muted-foreground">
-                      Anyone can see this repository
-                    </div>
-                  </div>
-                </div>
+                <GlobeIcon className="h-4 w-4" />
+                Public
               </SelectItem>
               <SelectItem value="private">
-                <div className="flex items-center gap-2">
-                  <LockIcon className="h-4 w-4" />
-                  <div>
-                    <div className="font-medium">Private</div>
-                    <div className="text-xs text-muted-foreground">
-                      Only you can see this repository
-                    </div>
-                  </div>
-                </div>
+                <LockIcon className="h-4 w-4" />
+                Private
               </SelectItem>
             </SelectContent>
           </Select>
