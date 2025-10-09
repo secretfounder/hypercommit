@@ -44,6 +44,7 @@ export async function createRepository(formData: FormData) {
 
   const name = formData.get("name") as string;
   const defaultBranch = formData.get("defaultBranch") as string;
+  const visibility = (formData.get("visibility") as string) || "public";
 
   if (!name || !defaultBranch) {
     return { error: "Missing required fields" };
@@ -56,6 +57,7 @@ export async function createRepository(formData: FormData) {
         id: crypto.randomUUID(),
         name,
         defaultBranch,
+        visibility,
         userId: session.user.id,
         createdAt: new Date(),
         updatedAt: new Date(),

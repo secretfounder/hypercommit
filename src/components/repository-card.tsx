@@ -5,13 +5,15 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { GitBranchIcon, ClockIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { GitBranchIcon, ClockIcon, LockIcon, GlobeIcon } from "lucide-react";
 
 interface RepositoryCardProps {
   owner: string;
   name: string;
   defaultBranch: string;
   createdAt: Date;
+  visibility?: string;
 }
 
 export function RepositoryCard({
@@ -19,14 +21,31 @@ export function RepositoryCard({
   name,
   defaultBranch,
   createdAt,
+  visibility = "public",
 }: RepositoryCardProps) {
   const relativeTime = getRelativeTime(createdAt);
+  const isPrivate = visibility === "private";
 
   return (
     <Link href={`/${owner}/${name}`}>
       <Card className="hover:opacity-80 transition-opacity">
         <CardHeader>
-          <CardTitle className="text-base">{name}</CardTitle>
+          <div className="flex items-start justify-between gap-2">
+            <CardTitle className="text-base">{name}</CardTitle>
+            <Badge variant={isPrivate ? "secondary" : "outline"} className="shrink-0">
+              {isPrivate ? (
+                <>
+                  <LockIcon className="h-3 w-3 mr-1" />
+                  Private
+                </>
+              ) : (
+                <>
+                  <GlobeIcon className="h-3 w-3 mr-1" />
+                  Public
+                </>
+              )}
+            </Badge>
+          </div>
           <CardDescription className="flex flex-col gap-2">
             <span className="flex items-center gap-1.5">
               <GitBranchIcon className="h-3.5 w-3.5" />

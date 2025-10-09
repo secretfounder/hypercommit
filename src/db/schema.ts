@@ -93,6 +93,7 @@ export const repository = pgTable("repository", {
   id: text("id").primaryKey(),
   name: text("name").notNull().unique(),
   defaultBranch: text("defaultBranch").notNull().default("main"),
+  visibility: text("visibility").notNull().default("public"),
   userId: text("userId").references(() => user.id),
   organizationId: text("organizationId").references(() => organization.id),
   createdAt: timestamp("createdAt").notNull(),

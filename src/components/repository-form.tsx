@@ -3,7 +3,14 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { GitBranchIcon } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { GitBranchIcon, LockIcon, GlobeIcon } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -13,6 +20,7 @@ export function RepositoryForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
+  const [visibility, setVisibility] = useState<"public" | "private">("public");
 
   function validateRepositoryName(name: string): boolean {
     // Git repository name validation rules:
@@ -145,6 +153,43 @@ export function RepositoryForm() {
             disabled={isLoading}
             icon={<GitBranchIcon className="h-4 w-4" />}
           />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="visibility">Visibility</Label>
+          <Select
+            name="visibility"
+            value={visibility}
+            onValueChange={(value) => setVisibility(value as "public" | "private")}
+            disabled={isLoading}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="public">
+                <div className="flex items-center gap-2">
+                  <GlobeIcon className="h-4 w-4" />
+                  <div>
+                    <div className="font-medium">Public</div>
+                    <div className="text-xs text-muted-foreground">
+                      Anyone can see this repository
+                    </div>
+                  </div>
+                </div>
+              </SelectItem>
+              <SelectItem value="private">
+                <div className="flex items-center gap-2">
+                  <LockIcon className="h-4 w-4" />
+                  <div>
+                    <div className="font-medium">Private</div>
+                    <div className="text-xs text-muted-foreground">
+                      Only you can see this repository
+                    </div>
+                  </div>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <Button
           className="w-full"

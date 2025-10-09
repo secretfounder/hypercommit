@@ -35,6 +35,7 @@ export default async function Home() {
                   name={repo.name}
                   defaultBranch={repo.defaultBranch}
                   createdAt={new Date(repo.createdAt)}
+                  visibility={repo.visibility}
                 />
               ))}
             </div>
