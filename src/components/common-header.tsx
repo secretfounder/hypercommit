@@ -1,21 +1,10 @@
-import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import { ExternalLinkIcon } from "lucide-react";
 import { Header } from "./header";
-import { cn } from "@/lib/utils";
 
-export function CommonHeader({ isExplore }: { isExplore?: boolean }) {
+export function CommonHeader() {
   return (
     <Header>
-      <Link
-        className={buttonVariants({
-          variant: "ghost",
-          className: cn("ml-2", isExplore && "bg-accent"),
-        })}
-        href="/explore/repositories"
-      >
-        Explore
-      </Link>
       <a
         className={buttonVariants({ variant: "ghost" })}
         href="https://blog.hypercommit.com"
