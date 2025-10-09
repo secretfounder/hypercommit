@@ -6,6 +6,7 @@ import { repository } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { createGitRepository } from "@/lib/git-repository";
 
 export async function getRepositories() {
   const session = await auth.api.getSession({
@@ -23,9 +24,9 @@ export async function getRepositories() {
       .where(eq(repository.userId, session.user.id))
       .orderBy(repository.createdAt);
 
-    return repositories.map(repo => ({
+    return repositories.map((repo) => ({
       ...repo,
-      owner: session.user.username || session.user.name
+      owner: session.user.username || session.user.name,
     }));
   } catch (error) {
     console.error("Error fetching repositories:", error);
@@ -50,7 +51,10 @@ export async function createRepository(formData: FormData) {
     return { error: "Missing required fields" };
   }
 
+  const owner = session.user.username || session.user.name;
+
   try {
+    // Create database entry
     const newRepository = await db
       .insert(repository)
       .values({
@@ -64,13 +68,27 @@ export async function createRepository(formData: FormData) {
       })
       .returning();
 
+    // Create git repository on disk
+    const gitResult = await createGitRepository({
+      owner,
+      repoName: name,
+      defaultBranch,
+    });
+
+    if (!gitResult.success) {
+      // Rollback database entry if git creation fails
+      await db.delete(repository).where(eq(repository.id, newRepository[0].id));
+
+      return { error: `Failed to create git repository: ${gitResult.error}` };
+    }
+
     revalidatePath("/");
     revalidatePath("/repositories");
 
     return {
       success: true,
       repository: newRepository[0],
-      username: session.user.username || session.user.name
+      username: owner,
     };
   } catch (error) {
     console.error("Error creating repository:", error);
