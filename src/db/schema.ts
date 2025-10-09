@@ -10,6 +10,7 @@ export const user = pgTable("user", {
   createdAt: timestamp("createdAt").notNull(),
   updatedAt: timestamp("updatedAt").notNull(),
   username: text("username").unique(),
+  displayUsername: text("display_username"),
 });
 
 export const session = pgTable("session", {
@@ -86,4 +87,14 @@ export const invitation = pgTable("invitation", {
   inviterId: text("inviterId")
     .notNull()
     .references(() => user.id),
+});
+
+export const repository = pgTable("repository", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  defaultBranch: text("defaultBranch").notNull().default("main"),
+  userId: text("userId").references(() => user.id),
+  organizationId: text("organizationId").references(() => organization.id),
+  createdAt: timestamp("createdAt").notNull(),
+  updatedAt: timestamp("updatedAt").notNull(),
 });
