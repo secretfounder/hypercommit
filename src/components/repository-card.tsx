@@ -32,7 +32,7 @@ export function RepositoryCard({
         <CardHeader>
           <div className="flex items-start justify-between gap-2">
             <CardTitle className="text-base">{name}</CardTitle>
-            <Badge variant={isPrivate ? "secondary" : "outline"} className="shrink-0">
+            <Badge variant="outline" className="shrink-0">
               {isPrivate ? (
                 <>
                   <LockIcon className="h-3 w-3 mr-1" />

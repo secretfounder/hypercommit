@@ -6,6 +6,9 @@ import { repository, user } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { LockIcon, GlobeIcon } from "lucide-react";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { checkRepositoryAccess } from "@/lib/git-auth";
 
 type RepositoryPageProps = {
   params: Promise<{
@@ -16,6 +19,11 @@ type RepositoryPageProps = {
 
 export default async function RepositoryPage({ params }: RepositoryPageProps) {
   const { username, repo } = await params;
+
+  // Get current session
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   const repoData = await db
     .select({
@@ -37,6 +45,20 @@ export default async function RepositoryPage({ params }: RepositoryPageProps) {
 
   const { name, visibility } = repoData[0];
   const isPrivate = visibility === "private";
+
+  // Check access for private repositories
+  if (isPrivate) {
+    const hasAccess = await checkRepositoryAccess(
+      username,
+      repo,
+      session?.user?.id,
+      "read"
+    );
+
+    if (!hasAccess) {
+      notFound();
+    }
+  }
 
   return (
     <>
