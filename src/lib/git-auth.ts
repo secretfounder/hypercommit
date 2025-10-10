@@ -174,7 +174,7 @@ export async function authenticateBasicAuth(
       authenticated: true,
       user: foundUser[0],
     };
-  } catch (error) {
+  } catch {
     return { authenticated: false };
   }
 }
