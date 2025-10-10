@@ -92,17 +92,12 @@ async function verifyPassword(
     // Derive key using scrypt with same parameters as better-auth
     // N=16384, r=16, p=1, dkLen=64
     // maxmem is calculated as: 128 * N * r * 2
-    const derivedKey = await scryptAsync(
-      normalizedPassword,
-      saltString,
-      64,
-      {
-        N: 16384,
-        r: 16,
-        p: 1,
-        maxmem: 128 * 16384 * 16 * 2,
-      }
-    );
+    const derivedKey = await scryptAsync(normalizedPassword, saltString, 64, {
+      N: 16384,
+      r: 16,
+      p: 1,
+      maxmem: 128 * 16384 * 16 * 2,
+    });
 
     // Compare using timing-safe comparison
     return (
@@ -124,11 +119,8 @@ export async function authenticateBasicAuth(
   const credentials = parseBasicAuth(authHeader);
 
   if (!credentials) {
-    console.log("[Git Auth] No credentials in header");
     return { authenticated: false };
   }
-
-  console.log(`[Git Auth] Authenticating user: ${credentials.username}`);
 
   try {
     // Find user by username or email
@@ -147,11 +139,8 @@ export async function authenticateBasicAuth(
       .limit(1);
 
     if (foundUser.length === 0) {
-      console.log(`[Git Auth] User not found: ${credentials.username}`);
       return { authenticated: false };
     }
-
-    console.log(`[Git Auth] User found: ${foundUser[0].id}`);
 
     // Get user's password hash from account table
     const userAccount = await db
@@ -168,19 +157,14 @@ export async function authenticateBasicAuth(
       .limit(1);
 
     if (userAccount.length === 0 || !userAccount[0].password) {
-      console.log("[Git Auth] No password account found");
       return { authenticated: false };
     }
-
-    console.log("[Git Auth] Verifying password...");
 
     // Verify password
     const isValid = await verifyPassword(
       credentials.password,
       userAccount[0].password
     );
-
-    console.log(`[Git Auth] Password valid: ${isValid}`);
 
     if (!isValid) {
       return { authenticated: false };
@@ -191,7 +175,6 @@ export async function authenticateBasicAuth(
       user: foundUser[0],
     };
   } catch (error) {
-    console.error("[Git Auth] Authentication error:", error);
     return { authenticated: false };
   }
 }
@@ -213,9 +196,7 @@ export async function checkRepositoryAccess(
       })
       .from(user)
       .where(
-        owner.includes("@")
-          ? eq(user.email, owner)
-          : eq(user.username, owner)
+        owner.includes("@") ? eq(user.email, owner) : eq(user.username, owner)
       )
       .limit(1);
 
