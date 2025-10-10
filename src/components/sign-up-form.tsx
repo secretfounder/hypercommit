@@ -24,7 +24,9 @@ const signUpSchema = z.object({
     .string()
     .min(3, "Username must be at least 3 characters")
     .max(30, "Username must be at most 30 characters")
-    .regex(/^[a-zA-Z0-9_-]+$/, "Username can only contain letters, numbers, hyphens, and underscores"),
+    .refine((val) => /^[a-zA-Z0-9_-]+$/.test(val), {
+      message: "Username can only contain letters, numbers, hyphens, and underscores",
+    }),
   email: z.string().min(1, "Email is required").email("Invalid email address"),
   password: z
     .string()
