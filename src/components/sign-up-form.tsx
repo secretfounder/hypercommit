@@ -39,7 +39,29 @@ export function SignUpForm() {
       });
 
       if (error) {
-        toast.error(error.message || "Failed to create account");
+        // Log the full error for debugging
+        console.error("Sign up error:", error);
+
+        // Check for specific error messages
+        let errorMessage: string;
+        if (typeof error === 'string') {
+          errorMessage = error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if ('error' in error && typeof error.error === 'string') {
+          errorMessage = error.error;
+        } else {
+          errorMessage = JSON.stringify(error) || "Failed to create account";
+        }
+
+        // Display user-friendly error messages
+        if (errorMessage.toLowerCase().includes("email") && errorMessage.toLowerCase().includes("already")) {
+          toast.error("This email is already registered. Please sign in or use a different email.");
+        } else if (errorMessage.toLowerCase().includes("username") && errorMessage.toLowerCase().includes("already")) {
+          toast.error("This username is already taken. Please choose a different username.");
+        } else {
+          toast.error(errorMessage);
+        }
         return;
       }
 
@@ -47,8 +69,9 @@ export function SignUpForm() {
         toast.success("Account created successfully!");
         router.push("/");
       }
-    } catch {
-      toast.error("An unexpected error occurred");
+    } catch (error) {
+      console.error("Unexpected error during sign up:", error);
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
